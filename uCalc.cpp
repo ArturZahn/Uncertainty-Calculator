@@ -1,16 +1,19 @@
 #include "uCalc.h"
 
 uVal::uVal() {
-  v = 0;
-  u = 0;
+    _initUnit();
+    v = 0;
+    u = 0;
 }
 
 uVal::uVal(typeCalc a, typeCalc b) {
-  v = a;
-  u = abs(b);
+    _initUnit();
+    v = a;
+    u = abs(b);
 }
 
 uVal::uVal(typeCalc a,typeCalc b, int powerOfTen) {
+    _initUnit();
     typeCalc p = pow(10, powerOfTen);
     v = a*p;
     u = abs(b)*p;
@@ -18,105 +21,292 @@ uVal::uVal(typeCalc a,typeCalc b, int powerOfTen) {
 
 string uVal::str()
 {
-  return to_string(v) + " " + (char)241 + " " + to_string(u);
+    return to_string(v) + " " + (char)241 + " " + to_string(u);
 }
 
 string uVal::stra()
 {
-  int cnDecPlac;
-  if(u == 0) cnDecPlac = 0;
-  else cnDecPlac = correctNumbDecimalPlaces(roundTo(u, correctNumbDecimalPlaces(u)));
+    int cnDecPlac;
+    if(u == 0) cnDecPlac = 0;
+    else cnDecPlac = correctNumbDecimalPlaces(roundTo(u, correctNumbDecimalPlaces(u)));
 
-  char formt[10];
-  char formatedStr[50];
-  if(cnDecPlac < 0)
-  {
-    sprintf (formatedStr, "%.0f %c %.0f", roundTo(v, cnDecPlac), (char)241, roundTo(u, cnDecPlac));
-  }
-  else
-  {
-    sprintf (formt, "%%.%df %c %%.%df", cnDecPlac, (char)241, cnDecPlac);
-    sprintf (formatedStr, formt, v, u);
-  }
+    char formt[10];
+    char formatedStr[50];
+    if(cnDecPlac < 0)
+    {
+        sprintf (formatedStr, "%.0f %c %.0f", roundTo(v, cnDecPlac), (char)241, roundTo(u, cnDecPlac));
+    }
+    else
+    {
+        sprintf (formt, "%%.%df %c %%.%df", cnDecPlac, (char)241, cnDecPlac);
+        sprintf (formatedStr, formt, v, u);
+    }
 
-  for (int i = 0; i < strlen(formatedStr); i++)
-  {
-    if(formatedStr[i] == '.') formatedStr[i] = ',';
-  }
-  
-  
-  return formatedStr;
-  // return to_string(v) + " " + (char)241 + " " + to_string(u);
+    for (int i = 0; i < strlen(formatedStr); i++)
+    {
+        if(formatedStr[i] == '.') formatedStr[i] = ',';
+    }
+    
+    
+    return formatedStr;
+    // return to_string(v) + " " + (char)241 + " " + to_string(u);
 }
 
 void uVal::print()
 {
-  cout << str() << endl;
+    cout << str() << endl;
 }
 
 void uVal::print(string name)
 {
-  cout << name << ": " << str() << endl;
+    cout << name << ": " << str() << endl;
 }
 
 void uVal::printa()
 {
-  cout << stra() << endl;
+    cout << stra() << endl;
 }
 
 void uVal::printa(string name)
 {
-  cout << name << ": " << stra() << endl;
+    cout << name << ": " << stra() << endl;
 }
 
 uVal uVal::operator+ (uVal p) {
-  uVal temp;
-  temp.v = v + p.v;
-  temp.u = abs(u) + abs(p.u);
-  return (temp);
+    uVal temp;
+    temp.v = v + p.v;
+    temp.u = abs(u) + abs(p.u);
+    return (temp);
 }
 
 uVal uVal::operator- (uVal p) {
-  uVal temp;
-  temp.v = v - p.v;
-  temp.u = abs(u) + abs(p.u);
-  return (temp);
+    uVal temp;
+    temp.v = v - p.v;
+    temp.u = abs(u) + abs(p.u);
+    return (temp);
 }
 
 uVal uVal::operator* (uVal p) {
-  uVal temp;
-  temp.v = v * p.v;
-  temp.u = abs(p.v*u) + abs(v*p.u);
-  return (temp);
+    uVal temp;
+    temp.v = v * p.v;
+    temp.u = abs(p.v*u) + abs(v*p.u);
+    return (temp);
 }
 
 uVal uVal::operator* (typeCalc p) {
-  uVal temp;
-  temp.v = v * p;
-  temp.u = abs(u * p);
-  return (temp);
+    uVal temp;
+    temp.v = v * p;
+    temp.u = abs(u * p);
+    return (temp);
 }
 
 uVal uVal::operator/ (uVal p) {
-  uVal temp;
-  temp.v = v / p.v;
-  temp.u = (abs(p.v*u) + abs(v*p.u))/abs(p.v*p.v);
-  return (temp);
+    uVal temp;
+    temp.v = v / p.v;
+    temp.u = (abs(p.v*u) + abs(v*p.u))/abs(p.v*p.v);
+    return (temp);
 }
 
 uVal uVal::operator/ (typeCalc p) {
-  uVal temp;
-  temp.v = v / p;
-  temp.u = abs(u/p);
-  return (temp);
+    uVal temp;
+    temp.v = v / p;
+    temp.u = abs(u/p);
+    return (temp);
 }
 
 uVal uVal::operator^ (int p) {
-  uVal temp;
-  temp.v = pow(v, p);
-  temp.u = abs(p*pow(v, p-1)*u);
-  return (temp);
+    uVal temp;
+    temp.v = pow(v, p);
+    temp.u = abs(p*pow(v, p-1)*u);
+    return (temp);
 }
+
+void uVal::_initUnit()
+{
+    this->nOfUnits[0] = 0;
+    this->nOfUnits[1] = 0;   
+}
+
+void push10(char* strBase, int* strBaseQtd, char* strAdd)
+{
+    int strBaseLen = strlen(strBase);
+    int strAddLen = strlen(strAdd);
+
+    // printf("p10:  base:%d add:%d total:%d baseQtd:%d", strBaseLen, strAddLen, strBaseLen+strAddLen+1, *strBaseQtd);
+
+    if(strBaseLen+strAddLen+1 > *strBaseQtd)
+    {
+        // printf(" muito grande");
+        while(strBaseLen+strAddLen+1 > *strBaseQtd) (*strBaseQtd) += 10;
+        realloc(strBase, sizeof(char) * (*strBaseQtd));
+    }
+    // printf("\n");
+
+    strcpy(strBase+strBaseLen, strAdd);
+}
+
+char* uVal::getUnit()
+{
+    int strLen = 0;
+    char* txtUnit = (char*) malloc(sizeof(char) * strLen);
+    
+    // for (int i = 0; i < 8000; i++)
+    // {
+    //     printf("%d'%c'", i, i);
+    // }
+    
+    char powerOfTwo[2];
+    powerOfTwo[0] = 253;
+    powerOfTwo[1] = '\0';
+
+    for (int where = 0; where < 2; where++)
+    {
+        if(where != 0) push10(txtUnit, &strLen, "/");
+        int jaFoi[this->nOfUnits[where]];
+        for(int i = 0; i < this->nOfUnits[where]; i++) jaFoi[i] = 0;
+
+        for (int i = 0; i < this->nOfUnits[where]; i++)
+        {
+            printf("vendo %2d-'%s' ", i, this->units[where][i]);
+
+
+            if(jaFoi[i] == 0)
+            {
+                if(i != 0) push10(txtUnit, &strLen, ".");
+
+                for (int j = 0; j < this->nOfUnits[where]; j++)
+                {
+                    if(strcmp(this->units[where][j], units[where][i]) == 0) jaFoi[j]++;
+                }
+
+                int count = this->_coutUnit(this->units[where][i], where);
+                printf("'%d'", count);
+                push10(txtUnit, &strLen, this->units[where][i]);
+                if(count > 2)
+                {
+                    char powerStr[15];
+                    itoa(count, powerStr, 10);
+                    push10(txtUnit, &strLen, "^");
+                    push10(txtUnit, &strLen, powerStr);
+                }
+                else if(count == 2)
+                {
+                    push10(txtUnit, &strLen, powerOfTwo);
+                }
+                
+            }
+            printf("\n");
+        }   
+        printf("\n\n");
+    }
+    // printf("final: '%s'\n", txtUnit);
+
+    return txtUnit;
+}
+
+void uVal::addUnit(char* unit, int where)
+{
+    int* cmp = this->_searchUnit(unit);
+    
+    printf("\"%s\" ", unit);
+    if(cmp[0] == -1)
+    {
+        printf("Ok\n");
+        this->_addUnit(unit, where);
+        return;
+    }
+
+    if(where != cmp[0])
+    {
+        printf("no lado oposto (%d-%d)\n", cmp[0], cmp[1]);
+        this->_removeUnit(cmp[1], cmp[0]);
+        return;
+    }
+
+    printf("no mesmo lado (%d-%d)\n", cmp[0], cmp[1]);
+    this->_addUnit(unit, where);
+}
+
+void uVal::_addUnit(char* unit, int where)
+{
+    this->nOfUnits[where]++;
+
+    realloc(this->units[where], sizeof(char*)*this->nOfUnits[where]);
+
+    int len = strlen(unit)+1;
+    this->units[where][this->nOfUnits[where]-1] = (char*) malloc(len*sizeof(char));
+    strcpy(this->units[where][this->nOfUnits[where]-1], unit);
+}
+
+// void uVal::_removeRepUnits()
+// {
+//     print("comparando:\n");
+//     for(int i = 0; i < this->nOfUnits[0]; i++)
+//     {
+//         for (int j = 0; j < this->nOfUnits[1]; j++)
+//         {
+//             printf("%d/%d -> \"%s\" - \"%s\"\n", i, j, this->units[0][i], this->units[1][j]);
+//         }
+//     }
+// }
+
+void uVal::_removeUnit(int n, int where)
+{
+    free(this->units[where][n]);
+
+    this->nOfUnits[where]--;
+
+    for (int i = n; i < this->nOfUnits[where]; i++)
+    {
+        units[where][i] = units[where][i+1];
+    }
+
+    realloc(this->units[where], sizeof(char*)*this->nOfUnits[where]);
+}
+
+int* uVal::_searchUnit(char* unit)
+{
+    int* ret = (int*) malloc(sizeof(int)*2);
+
+    for (int i = 0; i < this->nOfUnits[0]; i++)
+    {
+        ret[0] = 0;
+        ret[1] = i;
+        if(strcmp(this->units[0][i], unit) == 0) return ret;
+    }
+    for (int i = 0; i < this->nOfUnits[1]; i++)
+    {
+        ret[0] = 1;
+        ret[1] = i;
+        if(strcmp(this->units[1][i], unit) == 0) return ret;
+    }
+
+    ret[0] = -1;
+    return ret;
+}
+
+int uVal::_coutUnit(char* unit, int where)
+{
+    int count = 0;
+    for (int i = 0; i < this->nOfUnits[where]; i++)
+    {
+        if(strcmp(this->units[where][i], unit) == 0) count++;
+    }
+
+    return count;
+}
+
+void uVal::_printUnits()
+{
+    printf("\nUnidades:\n");
+    for (int i = 0; i < this->nOfUnits[0]; i++) printf("%s ", this->units[0][i]);
+    printf("\n----------------------\n");
+    for (int i = 0; i < this->nOfUnits[1]; i++) printf("%s ", this->units[1][i]);
+    printf("\n\n");
+}
+
+
+
 
 uVal sin(uVal p)
 {
@@ -138,18 +328,18 @@ uVal cos(uVal p)
 
 typeCalc roundTo(float value, int dec)
 {
-  float mult = pow(10, dec);
-  return round(value*mult)/mult;
+    float mult = pow(10, dec);
+    return round(value*mult)/mult;
 }
 
 int correctNumbDecimalPlaces(float value)
 {
-  return ceil(-log10(value));
+    return ceil(-log10(value));
 }
 
 typeCalc _printv( typeCalc num, const char * name )
 {
-  std::cout << name << ": " << to_string(num) << std::endl;
+     std::cout << name << ": " << to_string(num) << std::endl;
 }
 
 

@@ -31,6 +31,28 @@ public:
     void printa();
     void print(string);
     void printa(string);
+
+    // units handling
+    
+    #define NUMERATOR 0
+    #define DENOMINATOR 1
+
+    // int nOfNumerators;
+    // int nOfDenominator;
+    // char** numerator;
+    // char** denominator;
+    int nOfUnits[2];
+    char** units[2];
+
+    void _initUnit();
+    char* getUnit();
+    void addUnit(char*, int);
+    void _addUnit(char*, int);
+    // void _removeRepUnits();
+    int* _searchUnit(char*);
+    int _coutUnit(char*,int);
+    void _removeUnit(int n, int where);
+    void _printUnits();
 };
 
 #define printuv(val) (val).print(# val)
