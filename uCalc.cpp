@@ -125,7 +125,7 @@ uVal uVal::operator/ (typeCalc p) {
     return (temp);
 }
 
-uVal uVal::operator^ (int p) {
+uVal uVal::operator^ (typeCalc p) {
     uVal temp;
     temp.v = pow(v, p);
     temp.u = abs(p*pow(v, p-1)*u);
@@ -172,7 +172,7 @@ char* uVal::getUnit()
 
     for (int where = 0; where < 2; where++)
     {
-        if(where != 0) push10(txtUnit, &strLen, "/");
+        if(where != 0) push10(txtUnit, &strLen, (char*)"/");
         int jaFoi[this->nOfUnits[where]];
         for(int i = 0; i < this->nOfUnits[where]; i++) jaFoi[i] = 0;
 
@@ -183,7 +183,7 @@ char* uVal::getUnit()
 
             if(jaFoi[i] == 0)
             {
-                if(i != 0) push10(txtUnit, &strLen, ".");
+                if(i != 0) push10(txtUnit, &strLen, (char*)".");
 
                 for (int j = 0; j < this->nOfUnits[where]; j++)
                 {
@@ -197,7 +197,7 @@ char* uVal::getUnit()
                 {
                     char powerStr[15];
                     itoa(count, powerStr, 10);
-                    push10(txtUnit, &strLen, "^");
+                    push10(txtUnit, &strLen, (char*)"^");
                     push10(txtUnit, &strLen, powerStr);
                 }
                 else if(count == 2)
@@ -337,6 +337,23 @@ uVal cos(uVal p)
 }
 
 
+// uVal log(uVal p, typeCalc c)
+// {
+//     uVal temp;
+//     temp.v = 
+// }
+
+uVal ln(uVal p)
+{
+    uVal temp;
+    temp.v = log(p.v);
+    temp.u = p.u/p.v;
+
+    return temp;
+}
+
+
+
 typeCalc roundTo(float value, int dec)
 {
     float mult = pow(10, dec);
@@ -348,9 +365,9 @@ int correctNumbDecimalPlaces(float value)
     return ceil(-log10(value));
 }
 
-typeCalc _printv( typeCalc num, const char * name )
+void _printv( typeCalc num, const char * name )
 {
-     std::cout << name << ": " << to_string(num) << std::endl;
+    std::cout << name << ": " << to_string(num) << std::endl;
 }
 
 

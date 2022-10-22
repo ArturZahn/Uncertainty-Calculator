@@ -25,7 +25,7 @@ public:
     uVal operator * (typeCalc);
     uVal operator / (uVal);
     uVal operator / (typeCalc);
-    uVal operator ^ (int);
+    uVal operator ^ (typeCalc);
 
     string str();
     string stra();
@@ -68,10 +68,12 @@ public:
 typeCalc roundTo(float, int);
 int correctNumbDecimalPlaces(float);
 
-typeCalc _printv(typeCalc, const char *);
+void _printv(typeCalc, const char *);
 
 uVal sin(uVal p);
 uVal cos(uVal p);
+// uVal log(uVal p, typeCalc c);
+uVal ln(uVal p);
 
 typeCalc DegToRad(typeCalc);
 typeCalc RadToDeg(typeCalc);
@@ -128,6 +130,17 @@ typeCalc calcKBetweenValues(uVal, typeCalc);
 
 #define minimosQuadrados(arr1, arr2) _minimosQuadrados(arr1, arr2, sizeof(arr1)/sizeof(arr1[0]))
 void _minimosQuadrados(typeCalc x[], typeCalc y[], int size);
+
+
+
+const typeCalc t_tabelado_95[] = {
+    0,
+    12.706,
+    4.303,
+    3.183,
+    2.776,
+    2.571,
+};
 
 
 #endif
