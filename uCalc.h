@@ -17,6 +17,8 @@ public:
     uVal ();
     uVal (typeCalc,typeCalc);
     uVal (typeCalc,typeCalc,int);
+    // uVal (typeCalc,typeCalc,char*);
+    // uVal (typeCalc,typeCalc,int,char*);
     uVal operator + (uVal);
     uVal operator - (uVal);
     uVal operator * (uVal);

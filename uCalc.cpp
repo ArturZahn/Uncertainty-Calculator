@@ -19,6 +19,17 @@ uVal::uVal(typeCalc a,typeCalc b, int powerOfTen) {
     u = abs(b)*p;
 }
 
+// uVal::uVal(typeCalc,typeCalc,char*)
+// {
+
+// }
+
+// uVal::uVal(typeCalc,typeCalc,int,char*)
+// {
+
+// }
+
+
 string uVal::str()
 {
     return to_string(v) + " " + (char)241 + " " + to_string(u);
