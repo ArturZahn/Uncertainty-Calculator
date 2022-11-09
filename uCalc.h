@@ -33,6 +33,8 @@ public:
     void printa();
     void print(string);
     void printa(string);
+    void saveRounded();
+    uVal getRounded();
 
     // units handling
     
@@ -106,11 +108,15 @@ typeCalc _desvioMedio(typeCalc values[], int size);
 typeCalc _desvioPadrao(typeCalc values[], int size);
 
 
-#define medidaMedia_desvioPadrao(arr) _medidaMedia_desvioPadrao(arr, sizeof(arr)/sizeof(arr[0]))
+// #define medidaMedia_desvioPadrao(arr) _medidaMedia_desvioPadrao((arr), sizeof(arr)/sizeof(arr[0]))
+#define medidaMedia_desvioPadrao(arr) _medidaMedia_desvioPadrao((arr), sizeof(arr)/sizeof(arr[0]), #arr)
 uVal _medidaMedia_desvioPadrao(typeCalc values[], int size);
+uVal _medidaMedia_desvioPadrao(typeCalc values[], int size, string varName);
 uVal _medidaMedia_desvioPadrao(uVal values[], int size);
+uVal _medidaMedia_desvioPadrao(uVal values[], int size, string varName);
 
-#define medidaMedia_desvioMedio(arr) _medidaMedia_desvioMedio(arr, sizeof(arr)/sizeof(arr[0]))
+// #define medidaMedia_desvioMedio(arr) _medidaMedia_desvioMedio(arr, sizeof(arr)/sizeof(arr[0]))
+#define medidaMedia_desvioMedio(arr) _medidaMedia_desvioMedio(arr, sizeof(arr)/sizeof(arr[0]), #arr)
 uVal _medidaMedia_desvioMedio(typeCalc values[], int size);
 uVal _medidaMedia_desvioMedio(uVal values[], int size);
 
@@ -128,8 +134,8 @@ typeCalc calcKBetweenValues(uVal, typeCalc);
 
 
 
-#define minimosQuadrados(arr1, arr2) _minimosQuadrados(arr1, arr2, sizeof(arr1)/sizeof(arr1[0]))
-void _minimosQuadrados(typeCalc x[], typeCalc y[], int size);
+#define minimosQuadrados(arr1, arr2, ca, cb) _minimosQuadrados(arr1, arr2, sizeof(arr1)/sizeof(arr1[0]), (ca), (cb))
+void _minimosQuadrados(typeCalc x[], typeCalc y[], int size, uVal *pcoefA, uVal *pcoefB);
 
 
 

@@ -38,7 +38,7 @@ string uVal::str()
 string uVal::stra()
 {
     int cnDecPlac;
-    if(u == 0) cnDecPlac = 0;
+    if(u == 0)  cnDecPlac = correctNumbDecimalPlaces(v)+2;
     else cnDecPlac = correctNumbDecimalPlaces(roundTo(u, correctNumbDecimalPlaces(u)));
 
     char formt[10];
@@ -61,6 +61,26 @@ string uVal::stra()
     
     return formatedStr;
     // return to_string(v) + " " + (char)241 + " " + to_string(u);
+}
+
+void uVal::saveRounded()
+{
+    uVal temp = this->getRounded();
+
+    this->v = temp.v;
+    this->u = temp.u;
+}
+
+uVal uVal::getRounded()
+{
+    int cnDecPlac;
+    if(u == 0) cnDecPlac = 0;
+    else cnDecPlac = correctNumbDecimalPlaces(roundTo(u, correctNumbDecimalPlaces(u)));
+    
+    return uVal(
+        roundTo(v, cnDecPlac),
+        roundTo(u, cnDecPlac)
+    );
 }
 
 void uVal::print()
@@ -485,13 +505,24 @@ typeCalc _desvioPadrao(typeCalc values[], int size)
     return sqrt(sum/(size-1));
 }
 
-uVal _medidaMedia_desvioPadrao(typeCalc values[], int size)
+// uVal _medidaMedia_desvioPadrao(typeCalc values[], int size)
+// {
+//     return _medidaMedia_desvioPadrao(values, size, (char*)(""));
+// }
+
+uVal _medidaMedia_desvioPadrao(typeCalc values[], int size, char* varName)
 {
-    printf("\nAtencao, calculo da medida media foi feito sem considerar as incertezas dos valores originais.\n\n");
+    if(strlen(varName) != 0) printf("\nAtencao, calculo da medida media de \"%s\" foi feito sem considerar as incertezas dos valores originais.\n\n", varName);
+    else printf("\nAtencao, calculo da medida media foi feito sem considerar as incertezas dos valores originais.\n\n");
     return uVal(_valorMedio(values, size), _desvioPadrao(values, size));
 }
 
-uVal _medidaMedia_desvioPadrao(uVal values[], int size)
+// uVal _medidaMedia_desvioPadrao(uVal values[], int size)
+// {
+//     return _medidaMedia_desvioPadrao(values, size, (char*)(""));
+// }
+
+uVal _medidaMedia_desvioPadrao(uVal values[], int size, char* varName)
 {
     typeCalc* vs = _uValArrayToVArray(size, values);
     typeCalc* us = _uValArrayToUArray(size, values);
@@ -504,7 +535,8 @@ uVal _medidaMedia_desvioPadrao(uVal values[], int size)
 
     if(medUncert > desvPadrao)
     {
-        printf("\nAtencao, a media das incertezas foi usada como incerteza do valor calculado. Isso porque ela eh maior que o desvio padrao dos valores originais.\n\n");
+        if(strlen(varName) != 0) printf("\nAtencao, a media das incertezas (%lf) de \"%s\" foi usada como incerteza do valor calculado. Isso porque ela eh maior que o desvio padrao dos valores originais (%lf).\n\n", medUncert, varName, desvPadrao);
+        else printf("\nAtencao, a media das incertezas (%lf) foi usada como incerteza do valor calculado. Isso porque ela eh maior que o desvio padrao dos valores originais (%lf).\n\n", medUncert, desvPadrao);
         finalValue.u = medUncert;
     }
     else finalValue.u = desvPadrao;
@@ -512,13 +544,24 @@ uVal _medidaMedia_desvioPadrao(uVal values[], int size)
     return finalValue;
 }
 
-uVal _medidaMedia_desvioMedio(typeCalc values[], int size)
+// uVal _medidaMedia_desvioMedio(typeCalc values[], int size)
+// {
+//     return _medidaMedia_desvioMedio(values, size, (char*)(""));
+// }
+
+uVal _medidaMedia_desvioMedio(typeCalc values[], int size, char* varName)
 {
-    printf("\nAtencao, calculo da medida media foi feito sem considerar as incertezas dos valores originais.\n\n");
+    if(strlen(varName) != 0) printf("\nAtencao, calculo da medida media de \"%s\" foi feito sem considerar as incertezas dos valores originais.\n\n", varName);
+    else printf("\nAtencao, calculo da medida media foi feito sem considerar as incertezas dos valores originais.\n\n");
+
     return uVal(_valorMedio(values, size), _desvioMedio(values, size));
 }
 
-uVal _medidaMedia_desvioMedio(uVal values[], int size)
+// uVal _medidaMedia_desvioMedio(uVal values[], int size)
+// {
+//     return _medidaMedia_desvioMedio(values, size, (char*)(""));
+// }
+uVal _medidaMedia_desvioMedio(uVal values[], int size, char* varName)
 {
     typeCalc* vs = _uValArrayToVArray(size, values);
     typeCalc* us = _uValArrayToUArray(size, values);
@@ -531,7 +574,8 @@ uVal _medidaMedia_desvioMedio(uVal values[], int size)
 
     if(medUncert > desvMedio)
     {
-        printf("\nAtencao, a media das incertezas foi usada como incerteza do valor calculado. Isso porque ela eh maior que o desvio medio dos valores originais.\n\n");
+        if(strlen(varName) != 0) printf("\nAtencao, a media das incertezas (%lf) de \"%s\" foi usada como incerteza do valor calculado. Isso porque ela eh maior que o desvio medio dos valores originais (%lf).\n\n", medUncert, varName, desvMedio);
+        else printf("\nAtencao, a media das incertezas foi usada como incerteza (%lf) do valor calculado. Isso porque ela eh maior que o desvio medio dos valores originais (%lf).\n\n", medUncert, desvMedio);
         finalValue.u = medUncert;
     }
     else finalValue.u = desvMedio;
@@ -580,7 +624,7 @@ typeCalc calcKBetweenValues(uVal a, typeCalc b)
     return calcKBetweenValues(b, a);
 }
 
-void _minimosQuadrados(typeCalc x[], typeCalc y[], int size)
+void _minimosQuadrados(typeCalc x[], typeCalc y[], int size, uVal *pcoefA, uVal *pcoefB)
 {
     #define columnsOfTable 8
     typeCalc tab[columnsOfTable][size], sum[columnsOfTable];
@@ -686,7 +730,7 @@ void _minimosQuadrados(typeCalc x[], typeCalc y[], int size)
     printf("@%f", sum[6]);
     printf("@%f\n", sum[7]);
 
-    printf("\nResultados:\n");
+    printf("\nResultados brutos:\n");
 
     printv(dispersaoMediaY);
     printuv(coefA);
@@ -694,5 +738,8 @@ void _minimosQuadrados(typeCalc x[], typeCalc y[], int size)
     printf("\nResultados finais:\n");
     printuva(coefA);
     printuva(coefB);
+
+    *pcoefA = coefA;
+    *pcoefB = coefB;
     
 }
