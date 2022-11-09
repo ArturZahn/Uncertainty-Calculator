@@ -38,7 +38,10 @@ string uVal::str()
 string uVal::stra()
 {
     int cnDecPlac;
-    if(u == 0)  cnDecPlac = correctNumbDecimalPlaces(v)+2;
+    if(u == 0) {
+        cnDecPlac = correctNumbDecimalPlaces(v)+2;
+        if(cnDecPlac < 0) cnDecPlac = 0;
+    }
     else cnDecPlac = correctNumbDecimalPlaces(roundTo(u, correctNumbDecimalPlaces(u)));
 
     char formt[10];
@@ -382,7 +385,7 @@ typeCalc roundTo(float value, int dec)
 
 int correctNumbDecimalPlaces(float value)
 {
-    return ceil(-log10(value));
+    return ceil(-log10(abs(value)));
 }
 
 void _printv( typeCalc num, const char * name )
